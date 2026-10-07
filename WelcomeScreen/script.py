@@ -1,130 +1,71 @@
+varosok = []
+while (True):
+    sor = input()
+    if sor.strip().lower() == "vege":
+        break
+    adatok = sor.strip().split(",")
 
-'''
-#Lab_7.1
-with open("ertekek.txt", "rt") as f:
-    lista = []
-    for sor in f:
-       # print(sor.strip()) #Kiiratas
-        lista.append(int(sor))
+    nev = adatok[0]
+    lakos = int(adatok[1])
+    terulet = float(adatok[2])
 
-print(lista)
+    nepsuruseg = lakos / terulet
 
-with open("szamozott.txt", "w") as f:
-    for i in range(len(lista)):
-        f.write(f"{i+1}. {lista[i]} \n")
+    varos = {nev, lakos, terulet, nepsuruseg}
+    varosok.append(varos)
 
-print(f"Beolvasva: {len(lista)} szám az ertekek.txt fájlból.")
-print(f"Kiírva: {len(lista)} sor a szamozott.txt fájlba.")
-'''
+print(f"Varos Lakosok  Terulet  Nepsuruseg")
+print('-'*40)
+for varos in varosok:
+    nev = varos[0]
+    lakos = varos[1]
+    terulet = varos[2]
+    nepsuruseg = varos[3]
+    print(f"{nev}, {lakos}, {terulet}, {nepsuruseg}")
+print('-'*40)
 
-'''
-#Lab_7.3
-with open("ertekek.txt", "rt") as f:
+ossz_lakos = 0
+for varos in varosok:
+    ossz_lakos += varos[1]
+print(f"Osszlakossag: {ossz_lakos}")
 
-    paros = []
-    paratlan = []
-    lista = []
+print(f"Osszlakossag: {sum(map(lambda v: v[1], varosok))}")
+print(f"Osszterulet: {sum(map(lambda v: v[2],varosok))} km2")
+ossz_nepsuruseg = 0
+for varos in varosok:
+    ossz_nepsuruseg += varos[3]
+atlagos_nepsuruseg = ossz_nepsuruseg / len(varosok)
 
-    for sor in f:
-        lista.append(int(sor))
+print(f"Atlagos Nepsuruseg: {atlagos_nepsuruseg:.1f} fo/km2")
 
-    for szam in lista:
-        if szam % 2 == 0:
-            paros.append(szam)
-        else:
-            paratlan.append(szam)
+legsurubb = varosok[0]
+for varos in varosok:
+    if varos[3] > legsurubb[3]:
+        legsurubb = varos
 
-    print(paros)
-    print(paratlan)
+print(f"Legsurubb: {legsurubb}")
 
-def kiir_fajlba (fajlnev, lista):
-    with open (fajlnev, "wt") as f:
-        sorok = []
-        for szam in lista:
-            sorok.append(str(szam)+"\n")
-        f.writelines(sorok)
+rendezett = varosok.copy()
 
-kiir_fajlba("parosok.txt",paros)
-kiir_fajlba("paratlanok.txt", paratlan)
+for i in range(len(rendezett)):
+    for j in range(i+1, len(rendezett)):
+        if rendezett[i][3] == rendezett[j][3]:
+            rendezett[i], rendezett[j] = rendezett[j], rendezett[i]
 
-print(f"{'Páros:':<10} {len(paros)} db, összeg: {sum(paros)}")
-print(f"{'Paratlan:':<10} {len(paratlan)} db, összeg: {sum(paratlan)}")
-'''
+print("Nepsuruseg szerint csokkeno")
+for i in range(len(rendezett)):
+    varos = rendezett[i]
+    print(f"{i+1}, {varos[0]}, {varos[1]}, {varos[2]}, {varos[3]}")
 
-'''
-Lab_8.3
-szamok = []
-szavak = []
+nepesebb_varosok = []
+for varos in varosok:
+    if varos[1] > 150000:
+        nepesebb_varosok.append(varos)
 
-with open("bemenet.txt", "rt", encoding="utf-8") as f:
-    for sor in f:
-        elemek = sor.split(" ")
-        for elem in elemek:
-            try:
-                szam = int(elem)
-                szamok.append(szam)
+print(f"150 000nel nepeseebb varosok: {len(nepesebb_varosok)} db ")
 
-            except ValueError:
-                szavak.append(elem)
-
-with open("szamok_ki.txt", "wt") as f:
-    for szam in szamok:
-        f.write(str(szam)+ "\n")
-
-with open("szavak.txt", "wt") as f:
-    for szo in szavak:
-        f.write(szo + "\n")
-
-szam_db = len(szamok)
-szam_osszeg = sum(szamok)
-szam_atlag = szam_osszeg / szam_db
-szam_mini = min(szamok)
-szam_maxi = max(szamok)
-print(f"Számok : {szam_db} db, összeg: {szam_osszeg}, átlag: {szam_atlag} \n min: {szam_mini}, max: {szam_maxi}")
-
-szavak_db = len(szavak)
-szo_maxi = max(szavak, key = len) #Leghosszab szo
-ossz_betu = 0
-for szo in szavak:
-    ossz_betu += len(szo)
-
-szavak_atlag = ossz_betu / szavak_db
-
-print(f"Szavak : {szavak_db} db, leghosszabb: {szo_maxi} ({len(szo_maxi)} betű) \n átlagos szóhossz: {szavak_atlag}")
-'''
-
-#Lab_8.4
-
-ervenyes_pontok = []
-hibas_pontok = []
-ismetlodes = 0
-hossz = 0
-erv_db = 0
-
-with open("pontszamok.txt", "rt") as f:
-    for sor in f:
-        hossz += 1
-        try:
-            pont = int(sor)
-            if pont <= 100 and pont >= 0:
-                erv_db += 1
-                if pont not in ervenyes_pontok:
-                    ervenyes_pontok.append(pont)
-                else:
-                    ismetlodes += 1
-            else:
-                hibas_pontok.append(sor)
-        except ValueError:
-            hibas_pontok.append(sor)
-
-# print(f"{erv_db}")
-# print(f"{ervenyes_pontok}")
-
-print(f"Beolvasott sorok{':':>5} {hossz}")
-print(f"Érvényes pontszám{':':>5} {erv_db}")
-print(f"Ebből egyedi{':':>5} {erv_db-ismetlodes}")
-print(f"Ismétlődés{':':>5} {ismetlodes}")
-print(f"Hibás bejegyzés{':':>5} {len(hibas_pontok)}")
-print(f"Rendezett lista{':':>5} {sorted(ervenyes_pontok, reverse = True)}")
-
+print(
+    f"150 000nel nepeseebb varosok: "
+    f"{len(nepesebb_varosok)} db ({','.join(nepesebb_varosok)})"
+)
 
